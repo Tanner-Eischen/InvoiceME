@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-09T23:14:51-0600",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.17 (Eclipse Adoptium)"
+    date = "2025-11-10T14:07:01-0600",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class PaymentMapperImpl implements PaymentMapper {
@@ -27,13 +27,13 @@ public class PaymentMapperImpl implements PaymentMapper {
 
         paymentDto.invoiceId( paymentInvoiceId( payment ) );
         paymentDto.invoiceNumber( paymentInvoiceNumber( payment ) );
-        paymentDto.id( payment.getId() );
         paymentDto.amount( payment.getAmount() );
+        paymentDto.createdAt( payment.getCreatedAt() );
+        paymentDto.id( payment.getId() );
         paymentDto.method( payment.getMethod() );
-        paymentDto.status( payment.getStatus() );
         paymentDto.receivedAt( payment.getReceivedAt() );
         paymentDto.reference( payment.getReference() );
-        paymentDto.createdAt( payment.getCreatedAt() );
+        paymentDto.status( payment.getStatus() );
         paymentDto.updatedAt( payment.getUpdatedAt() );
 
         return paymentDto.build();
@@ -63,9 +63,9 @@ public class PaymentMapperImpl implements PaymentMapper {
 
         payment.amount( command.getAmount() );
         payment.method( command.getMethod() );
-        payment.status( command.getStatus() );
         payment.receivedAt( command.getReceivedAt() );
         payment.reference( command.getReference() );
+        payment.status( command.getStatus() );
 
         return payment.build();
     }

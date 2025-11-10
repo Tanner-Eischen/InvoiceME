@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-09T23:14:50-0600",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.17 (Eclipse Adoptium)"
+    date = "2025-11-10T14:07:01-0600",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class UserMapperImpl implements UserMapper {
@@ -25,11 +25,11 @@ public class UserMapperImpl implements UserMapper {
 
         UserDto.UserDtoBuilder userDto = UserDto.builder();
 
+        userDto.createdAt( user.getCreatedAt() );
+        userDto.email( user.getEmail() );
         userDto.id( user.getId() );
         userDto.name( user.getName() );
-        userDto.email( user.getEmail() );
         userDto.role( user.getRole() );
-        userDto.createdAt( user.getCreatedAt() );
         userDto.updatedAt( user.getUpdatedAt() );
 
         return userDto.build();
@@ -57,8 +57,8 @@ public class UserMapperImpl implements UserMapper {
 
         User.UserBuilder<?, ?> user = User.builder();
 
-        user.name( command.getName() );
         user.email( command.getEmail() );
+        user.name( command.getName() );
         user.password( command.getPassword() );
         user.role( command.getRole() );
 
@@ -77,9 +77,9 @@ public class UserMapperImpl implements UserMapper {
             if ( user.getRole() != null ) {
                 jwtResponse.role( user.getRole().name() );
             }
+            jwtResponse.email( user.getEmail() );
             jwtResponse.id( user.getId() );
             jwtResponse.name( user.getName() );
-            jwtResponse.email( user.getEmail() );
         }
         jwtResponse.token( token );
 

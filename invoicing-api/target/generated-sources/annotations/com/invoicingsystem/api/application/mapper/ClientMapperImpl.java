@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-09T23:14:50-0600",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.17 (Eclipse Adoptium)"
+    date = "2025-11-10T14:07:01-0600",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class ClientMapperImpl implements ClientMapper {
@@ -25,12 +25,12 @@ public class ClientMapperImpl implements ClientMapper {
 
         ClientDto.ClientDtoBuilder clientDto = ClientDto.builder();
 
-        clientDto.id( client.getId() );
-        clientDto.name( client.getName() );
-        clientDto.email( client.getEmail() );
-        clientDto.phone( client.getPhone() );
         clientDto.address( client.getAddress() );
         clientDto.createdAt( client.getCreatedAt() );
+        clientDto.email( client.getEmail() );
+        clientDto.id( client.getId() );
+        clientDto.name( client.getName() );
+        clientDto.phone( client.getPhone() );
         clientDto.updatedAt( client.getUpdatedAt() );
 
         return clientDto.build();
@@ -58,10 +58,10 @@ public class ClientMapperImpl implements ClientMapper {
 
         Client.ClientBuilder<?, ?> client = Client.builder();
 
-        client.name( command.getName() );
-        client.email( command.getEmail() );
-        client.phone( command.getPhone() );
         client.address( command.getAddress() );
+        client.email( command.getEmail() );
+        client.name( command.getName() );
+        client.phone( command.getPhone() );
 
         return client.build();
     }
@@ -72,10 +72,10 @@ public class ClientMapperImpl implements ClientMapper {
             return;
         }
 
+        client.setAddress( command.getAddress() );
+        client.setEmail( command.getEmail() );
         client.setId( command.getId() );
         client.setName( command.getName() );
-        client.setEmail( command.getEmail() );
         client.setPhone( command.getPhone() );
-        client.setAddress( command.getAddress() );
     }
 }

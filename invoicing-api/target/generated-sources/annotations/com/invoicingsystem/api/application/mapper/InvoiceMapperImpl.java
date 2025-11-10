@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-11-09T23:14:51-0600",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.17 (Eclipse Adoptium)"
+    date = "2025-11-10T14:07:01-0600",
+    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.44.0.v20251023-0518, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
 public class InvoiceMapperImpl implements InvoiceMapper {
@@ -34,20 +34,20 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         invoiceDto.clientEmail( invoiceClientEmail( invoice ) );
         invoiceDto.createdById( invoiceCreatedById( invoice ) );
         invoiceDto.createdByName( invoiceCreatedByName( invoice ) );
-        invoiceDto.id( invoice.getId() );
-        invoiceDto.number( invoice.getNumber() );
-        invoiceDto.issueDate( invoice.getIssueDate() );
-        invoiceDto.dueDate( invoice.getDueDate() );
-        invoiceDto.status( invoice.getStatus() );
-        invoiceDto.subtotal( invoice.getSubtotal() );
-        invoiceDto.taxRate( invoice.getTaxRate() );
-        invoiceDto.taxAmount( invoice.getTaxAmount() );
-        invoiceDto.total( invoice.getTotal() );
         invoiceDto.amountPaid( invoice.getAmountPaid() );
         invoiceDto.balance( invoice.getBalance() );
-        invoiceDto.notes( invoice.getNotes() );
-        invoiceDto.items( invoiceItemsToInvoiceItemDtos( invoice.getItems() ) );
         invoiceDto.createdAt( invoice.getCreatedAt() );
+        invoiceDto.dueDate( invoice.getDueDate() );
+        invoiceDto.id( invoice.getId() );
+        invoiceDto.issueDate( invoice.getIssueDate() );
+        invoiceDto.items( invoiceItemsToInvoiceItemDtos( invoice.getItems() ) );
+        invoiceDto.notes( invoice.getNotes() );
+        invoiceDto.number( invoice.getNumber() );
+        invoiceDto.status( invoice.getStatus() );
+        invoiceDto.subtotal( invoice.getSubtotal() );
+        invoiceDto.taxAmount( invoice.getTaxAmount() );
+        invoiceDto.taxRate( invoice.getTaxRate() );
+        invoiceDto.total( invoice.getTotal() );
         invoiceDto.updatedAt( invoice.getUpdatedAt() );
 
         return invoiceDto.build();
@@ -75,12 +75,12 @@ public class InvoiceMapperImpl implements InvoiceMapper {
 
         InvoiceItemDto.InvoiceItemDtoBuilder invoiceItemDto = InvoiceItemDto.builder();
 
-        invoiceItemDto.id( invoiceItem.getId() );
-        invoiceItemDto.description( invoiceItem.getDescription() );
-        invoiceItemDto.quantity( invoiceItem.getQuantity() );
-        invoiceItemDto.unitPrice( invoiceItem.getUnitPrice() );
         invoiceItemDto.amount( invoiceItem.getAmount() );
         invoiceItemDto.createdAt( invoiceItem.getCreatedAt() );
+        invoiceItemDto.description( invoiceItem.getDescription() );
+        invoiceItemDto.id( invoiceItem.getId() );
+        invoiceItemDto.quantity( invoiceItem.getQuantity() );
+        invoiceItemDto.unitPrice( invoiceItem.getUnitPrice() );
         invoiceItemDto.updatedAt( invoiceItem.getUpdatedAt() );
 
         return invoiceItemDto.build();
@@ -111,10 +111,10 @@ public class InvoiceMapperImpl implements InvoiceMapper {
         if ( command.getStatus() != null ) {
             invoice.status( Enum.valueOf( Invoice.InvoiceStatus.class, command.getStatus() ) );
         }
-        invoice.issueDate( command.getIssueDate() );
         invoice.dueDate( command.getDueDate() );
-        invoice.taxRate( command.getTaxRate() );
+        invoice.issueDate( command.getIssueDate() );
         invoice.notes( command.getNotes() );
+        invoice.taxRate( command.getTaxRate() );
 
         return invoice.build();
     }
@@ -125,23 +125,23 @@ public class InvoiceMapperImpl implements InvoiceMapper {
             return;
         }
 
+        if ( command.getDueDate() != null ) {
+            invoice.setDueDate( command.getDueDate() );
+        }
         if ( command.getId() != null ) {
             invoice.setId( command.getId() );
         }
         if ( command.getIssueDate() != null ) {
             invoice.setIssueDate( command.getIssueDate() );
         }
-        if ( command.getDueDate() != null ) {
-            invoice.setDueDate( command.getDueDate() );
+        if ( command.getNotes() != null ) {
+            invoice.setNotes( command.getNotes() );
         }
         if ( command.getStatus() != null ) {
             invoice.setStatus( Enum.valueOf( Invoice.InvoiceStatus.class, command.getStatus() ) );
         }
         if ( command.getTaxRate() != null ) {
             invoice.setTaxRate( command.getTaxRate() );
-        }
-        if ( command.getNotes() != null ) {
-            invoice.setNotes( command.getNotes() );
         }
     }
 
@@ -168,8 +168,8 @@ public class InvoiceMapperImpl implements InvoiceMapper {
 
         InvoiceItem.InvoiceItemBuilder<?, ?> invoiceItem = InvoiceItem.builder();
 
-        invoiceItem.id( itemDto.getId() );
         invoiceItem.description( itemDto.getDescription() );
+        invoiceItem.id( itemDto.getId() );
         invoiceItem.quantity( itemDto.getQuantity() );
         invoiceItem.unitPrice( itemDto.getUnitPrice() );
 

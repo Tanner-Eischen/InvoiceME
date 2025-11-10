@@ -2,6 +2,7 @@ com\invoicingsystem\api\infrastructure\web\controller\InvoiceLifecycleIntegratio
 com\invoicingsystem\api\application\service\InvoiceServiceImplTest.class
 com\invoicingsystem\api\application\service\ClientServiceImplTest.class
 com\invoicingsystem\api\infrastructure\web\controller\InvoiceControllerTest.class
+com\invoicingsystem\api\infrastructure\config\TestSecurityConfig.class
 com\invoicingsystem\api\infrastructure\integration\InvoicePaymentIntegrationTest$EventCapture.class
 com\invoicingsystem\api\infrastructure\web\controller\InvoiceBalanceIntegrationTest.class
 com\invoicingsystem\api\domain\model\InvoiceTest.class

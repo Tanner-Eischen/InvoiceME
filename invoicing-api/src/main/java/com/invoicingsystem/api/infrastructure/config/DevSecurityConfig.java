@@ -3,6 +3,9 @@ package com.invoicingsystem.api.infrastructure.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Primary;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,6 +17,13 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 public class DevSecurityConfig {
 
     @Bean
+    @Primary
+    public PasswordEncoder devPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Primary
     public UserDetailsService inMemoryUserDetailsService(PasswordEncoder passwordEncoder) {
         UserDetails user = User.withUsername("user")
                 .password(passwordEncoder.encode("password"))

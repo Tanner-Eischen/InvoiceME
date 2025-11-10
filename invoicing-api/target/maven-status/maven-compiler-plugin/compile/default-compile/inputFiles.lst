@@ -6,8 +6,10 @@ C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\domain\event\PaymentRecordedEvent.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\infrastructure\security\JwtAuthenticationEntryPoint.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\application\command\CreateInvoiceCommand.java
+C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\infrastructure\config\DataSeederConfig.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\application\service\impl\PaymentServiceImpl.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\infrastructure\security\JwtUtils.java
+C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\infrastructure\config\PasswordEncoderConfig.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\application\command\LoginCommand.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\application\service\ClientService.java
 C:\Users\tanne\Gauntlet\Invoice\invoicing-api\src\main\java\com\invoicingsystem\api\domain\repository\InvoiceRepository.java

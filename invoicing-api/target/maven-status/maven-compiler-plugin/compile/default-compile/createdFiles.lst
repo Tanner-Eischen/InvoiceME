@@ -60,6 +60,7 @@ com\invoicingsystem\api\infrastructure\security\JwtAuthenticationFilter.class
 com\invoicingsystem\api\application\query\InvoiceItemDto$InvoiceItemDtoBuilder.class
 com\invoicingsystem\api\domain\model\Invoice.class
 com\invoicingsystem\api\application\mapper\InvoiceMapper.class
+com\invoicingsystem\api\infrastructure\config\DataSeederConfig.class
 com\invoicingsystem\api\application\query\JwtResponse$JwtResponseBuilder.class
 com\invoicingsystem\api\domain\model\BaseEntity$BaseEntityBuilder.class
 com\invoicingsystem\api\application\query\ClientDto.class

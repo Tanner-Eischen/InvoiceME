@@ -98,15 +98,18 @@ public class Invoice extends BaseEntity {
     public void calculateTotals() {
         this.subtotal = items.stream()
                 .map(InvoiceItem::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, java.math.RoundingMode.HALF_UP);
 
         if (taxRate != null) {
-            this.taxAmount = subtotal.multiply(taxRate.divide(new BigDecimal("100")));
+            this.taxAmount = subtotal
+                    .multiply(taxRate.divide(new BigDecimal("100")))
+                    .setScale(2, java.math.RoundingMode.HALF_UP);
         } else {
             this.taxAmount = BigDecimal.ZERO;
         }
 
-        this.total = subtotal.add(taxAmount);
+        this.total = subtotal.add(taxAmount).setScale(2, java.math.RoundingMode.HALF_UP);
         recalculateBalance();
     }
 
