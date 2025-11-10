@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>API Connection Test</h1>
+    <button onclick="testConnection()">Test Backend Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testConnection() {
+            const resultDiv = document.getElementById('result');
+            try {
+                // Test if backend is running
+                const response = await fetch('http://localhost:8080/api/actuator/health');
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = '<p style="color: green;">✅ Backend is running: ' + JSON.stringify(data) + '</p>';
+                } else {
+                    const text = await response.text().catch(() => '');
+                    const message = text && text.trim().length ? text : `HTTP ${response.status}`;
+                    resultDiv.innerHTML = '<p style="color: red;">❌ Backend returned error: ' + message + '</p>';
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '<p style="color: red;">❌ Cannot connect to backend: ' + error.message + '</p>';
+            }
+        }
+    </script

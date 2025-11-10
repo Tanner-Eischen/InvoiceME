@@ -1,0 +1,49 @@
+# General OS/editor files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.iml
+.idea/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files (secrets)
+.env
+.env.*
+.env.local
+.env.*.local
+
+# Node/TypeScript/JS
+node_modules/
+dist/
+.tmp/
+*.tsbuildinfo
+.eslintcache
+
+# Next.js / static outputs
+.next/
+out/
+.vercel/
+.netlify/
+
+# Tests and coverage
+coverage/
+playwright-report/
+test-results/
+tests/artifacts/
+
+# Java / Spring Boot (Maven)
+invoicing-api/target/
+
+# Databases / local development data
+*.sqlite
+*.db
+
+# Misc caches
+.cache/

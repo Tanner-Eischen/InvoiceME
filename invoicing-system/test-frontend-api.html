@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend API Test</title>
+</head>
+<body>
+    <h1>Frontend API Connection Test</h1>
+    <button onclick="testRegister()">Test Registration</button>
+    <button onclick="testLogin()">Test Login</button>
+    <div id="result"></div>
+
+    <script>
+        async function testRegister() {
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: 'Frontend Test User',
+                        email: 'frontend@test.com',
+                        password: 'password123',
+                        role: 'USER'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('result').innerHTML = `<h3>Registration Success:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    const text = await response.text().catch(() => '');
+                    const message = text && text.trim().length ? text : `HTTP ${response.status}`;
+                    document.getElementById('result').innerHTML = `<h3>Registration Error:</h3><pre>${message}</pre>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<h3>Registration Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:8080/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: 'frontend@test.com',
+                        password: 'password123'
+                    })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById('result').innerHTML = `<h3>Login Success:</h3><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    const text = await response.text().catch(() => '');
+                    const message = text && text.trim().length ? text : `HTTP ${response.status}`;
+                    document.getElementById('result').innerHTML = `<h3>Login Error:</h3><pre>${message}</pre>`;
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = `<h3>Login Error:</h3><pre>${error.message}</pre>`;
+            }
+        }
+    </script>
+</body>
+</
