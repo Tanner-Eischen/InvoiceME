@@ -131,15 +131,17 @@ export default function DashboardPage() {
     return () => {
       isMounted = false;
     };
-  }, []); // Empty dependency array to run only once
+  }, [fetchInvoices, fetchClients]);
 
   // Memoized function for calculating stats
   const calculateStats = useCallback(() => {
     if (!invoices || !clients || invoices.length === 0) return;
 
     const paidInvoices = invoices.filter(inv => inv.status === 'PAID');
+    const partiallyPaidInvoices = invoices.filter(inv => inv.status === 'PARTIALLY_PAID');
     const overdueInvoices = invoices.filter(inv => inv.status === 'OVERDUE');
-    const totalAmount = paidInvoices.reduce((sum, inv) => sum + inv.total, 0);
+    const totalAmount = paidInvoices.reduce((sum, inv) => sum + inv.total, 0) +
+      partiallyPaidInvoices.reduce((sum, inv) => sum + (inv.amountPaid || 0), 0);
 
     // Generate data for invoice status chart
     const statusCounts: Record<string, number> = {
@@ -162,13 +164,15 @@ export default function DashboardPage() {
 
     // Generate monthly revenue data
     const monthlyRevenue: Record<string, number> = {};
-    paidInvoices.forEach(inv => {
+    // Include revenue from fully paid invoices (total) and partially paid invoices (amountPaid)
+    [...paidInvoices, ...partiallyPaidInvoices].forEach(inv => {
       const date = new Date(inv.issueDate);
       const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
       if (!monthlyRevenue[monthYear]) {
         monthlyRevenue[monthYear] = 0;
       }
-      monthlyRevenue[monthYear] += inv.total;
+      const addAmount = inv.status === 'PAID' ? inv.total : (inv.amountPaid || 0);
+      monthlyRevenue[monthYear] += addAmount;
     });
 
     const revenueByMonth = Object.entries(monthlyRevenue)
@@ -255,7 +259,8 @@ export default function DashboardPage() {
     const { name, percent } = props;
     if (name === undefined || percent === undefined || percent === null) return '';
     const percentValue = Number(percent);
-    if (isNaN(percentValue)) return '';
+    // Hide labels for zero or very small slices to avoid misleading text
+    if (isNaN(percentValue) || percentValue <= 0.02) return '';
     return `${name}: ${(percentValue * 100).toFixed(0)}%`;
   }, []);
 

@@ -23,6 +23,9 @@ export interface Invoice {
   taxRate: number | null;
   taxAmount: number;
   total: number;
+  // Optional fields that may be provided by backend
+  amountPaid?: number;
+  balance?: number | string;
   notes: string | null;
   createdById: string;
   createdByName: string;

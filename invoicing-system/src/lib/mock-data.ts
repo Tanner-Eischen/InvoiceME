@@ -1,5 +1,6 @@
 import { Client } from "@/models/Client";
 import { Invoice, InvoiceStatus } from "@/models/Invoice";
+import { Payment, PaymentMethod, PaymentStatus } from "@/models/Payment";
 import { v4 as uuidv4 } from "uuid";
 
 // Mock clients data
@@ -245,6 +246,7 @@ export const mockInvoices: Invoice[] = [
 const STORAGE_KEYS = {
   INVOICES: 'invoicing_mock_invoices',
   CLIENTS: 'invoicing_mock_clients',
+  PAYMENTS: 'invoicing_mock_payments',
 };
 
 // Flag to track if storage has already been initialized in this session
@@ -266,6 +268,10 @@ const initializeStorage = (): void => {
 
   if (!localStorage.getItem(STORAGE_KEYS.CLIENTS)) {
     localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify(mockClients));
+  }
+
+  if (!localStorage.getItem(STORAGE_KEYS.PAYMENTS)) {
+    localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(mockPayments));
   }
 };
 
@@ -303,6 +309,43 @@ type ClientInput = {
   phone?: string;
   address: string;
 };
+
+// Mock payments data
+export const mockPayments: Payment[] = [
+  {
+    id: 'pay-1',
+    invoiceId: 'inv-1',
+    amount: 2200.0,
+    method: PaymentMethod.BANK_TRANSFER,
+    status: PaymentStatus.COMPLETED,
+    receivedAt: new Date(2023, 9, 2).toISOString(),
+    reference: 'ACME-INV-2023-001-BANK',
+    createdAt: new Date(2023, 9, 2).toISOString(),
+    updatedAt: new Date(2023, 9, 2).toISOString()
+  },
+  {
+    id: 'pay-2',
+    invoiceId: 'inv-2',
+    amount: 5500.0,
+    method: PaymentMethod.CREDIT_CARD,
+    status: PaymentStatus.COMPLETED,
+    receivedAt: new Date(2023, 9, 6).toISOString(),
+    reference: 'GLOBEX-INV-2023-002-CC',
+    createdAt: new Date(2023, 9, 6).toISOString(),
+    updatedAt: new Date(2023, 9, 6).toISOString()
+  },
+  {
+    id: 'pay-3',
+    invoiceId: 'inv-3',
+    amount: 5000.0,
+    method: PaymentMethod.CASH,
+    status: PaymentStatus.PENDING,
+    receivedAt: new Date(2023, 9, 16).toISOString(),
+    reference: 'WAYNE-ADVANCE-1',
+    createdAt: new Date(2023, 9, 16).toISOString(),
+    updatedAt: new Date(2023, 9, 16).toISOString()
+  }
+];
 
 // Mock API service to simulate backend
 export const mockApiService = {
@@ -607,6 +650,99 @@ export const mockApiService = {
       clients.splice(index, 1);
       localStorage.setItem(STORAGE_KEYS.CLIENTS, JSON.stringify(clients));
 
+      return Promise.resolve();
+    }
+  },
+
+  // Payment methods
+  payments: {
+    getAll(): Promise<Payment[]> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      return Promise.resolve(payments);
+    },
+
+    getById(id: string): Promise<Payment> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      const payment = payments.find((p: Payment) => p.id === id);
+      if (!payment) {
+        return Promise.reject(new Error(`Payment with ID ${id} not found`));
+      }
+      return Promise.resolve(payment);
+    },
+
+    getByInvoiceId(invoiceId: string): Promise<Payment[]> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      return Promise.resolve(payments.filter((p: Payment) => p.invoiceId === invoiceId));
+    },
+
+    create(paymentData: { invoiceId: string; amount: number; method: PaymentMethod; receivedAt?: string; reference?: string; }): Promise<Payment> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      const newPayment: Payment = {
+        id: `pay-${uuidv4()}`,
+        invoiceId: paymentData.invoiceId,
+        amount: paymentData.amount,
+        method: paymentData.method,
+        status: PaymentStatus.PENDING,
+        receivedAt: paymentData.receivedAt || new Date().toISOString(),
+        reference: paymentData.reference,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      payments.push(newPayment);
+      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
+      return Promise.resolve(newPayment);
+    },
+
+    update(id: string, paymentData: Partial<{ invoiceId: string; amount: number; method: PaymentMethod; receivedAt?: string; reference?: string; status?: PaymentStatus; }>): Promise<Payment> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      const index = payments.findIndex((p: Payment) => p.id === id);
+      if (index === -1) {
+        return Promise.reject(new Error(`Payment with ID ${id} not found`));
+      }
+      payments[index] = {
+        ...payments[index],
+        invoiceId: paymentData.invoiceId || payments[index].invoiceId,
+        amount: paymentData.amount ?? payments[index].amount,
+        method: paymentData.method || payments[index].method,
+        status: paymentData.status || payments[index].status,
+        receivedAt: paymentData.receivedAt || payments[index].receivedAt,
+        reference: paymentData.reference ?? payments[index].reference,
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
+      return Promise.resolve(payments[index]);
+    },
+
+    updateStatus(id: string, status: PaymentStatus): Promise<Payment> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      const index = payments.findIndex((p: Payment) => p.id === id);
+      if (index === -1) {
+        return Promise.reject(new Error(`Payment with ID ${id} not found`));
+      }
+      payments[index] = {
+        ...payments[index],
+        status,
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
+      return Promise.resolve(payments[index]);
+    },
+
+    delete(id: string): Promise<void> {
+      initializeStorage();
+      const payments: Payment[] = JSON.parse(localStorage.getItem(STORAGE_KEYS.PAYMENTS) || '[]');
+      const index = payments.findIndex((p: Payment) => p.id === id);
+      if (index === -1) {
+        return Promise.reject(new Error(`Payment with ID ${id} not found`));
+      }
+      payments.splice(index, 1);
+      localStorage.setItem(STORAGE_KEYS.PAYMENTS, JSON.stringify(payments));
       return Promise.resolve();
     }
   }

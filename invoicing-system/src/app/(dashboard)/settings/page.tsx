@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { isAdmin } from '@/lib/auth';
+import { useRouter } from 'next/navigation';
 import { Settings as SettingsIcon, Save, Building, Mail, Globe, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -60,6 +62,17 @@ type EmailSettingsValues = z.infer<typeof emailSettingsSchema>;
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('company');
+  const [authorized, setAuthorized] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const admin = isAdmin();
+    setAuthorized(admin);
+    if (!admin) {
+      // Optional: redirect non-admin users back to dashboard
+      // router.push('/');
+    }
+  }, []);
 
   // Company settings form
   const companyForm = useForm<CompanySettingsValues>({
@@ -101,6 +114,30 @@ export default function SettingsPage() {
     console.log('Email settings:', data);
     toast.success('Email settings updated successfully');
   };
+
+  if (!authorized) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col gap-2">
+          <h2 className="text-3xl font-bold tracking-tight">Access Denied</h2>
+          <p className="text-muted-foreground">
+            You need admin privileges to view Settings.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Restricted Area</CardTitle>
+            <CardDescription>
+              This page is only available to administrators.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button onClick={() => router.push('/')}>Back to Dashboard</Button>
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">

@@ -42,11 +42,17 @@ This project is structured as a full-stack application with:
 - View: React components
 - ViewModel: Mediator connecting views to models with business logic
 
+## Documentation
+- Technical Writeup: `docs/technical-writeup.md`
+- Demo Script: `docs/demo-script.md`
+- AI Tooling Documentation: `docs/ai-tools.md`
+- Test Cases and Validation Results: `docs/test-results.md`
+
 ## Project Structure
 
-### Frontend Archive
+### Frontend
 
-**Note**: A legacy frontend implementation has been archived in the `legacy-frontend/` directory. This was the original `src-backup/` that has been moved and documented for historical reference. The authoritative frontend code is located in the `invoicing-system/` directory.
+The authoritative frontend code is located in the `invoicing-system/` directory.
 
 ### Backend (Spring Boot)
 
@@ -107,6 +113,62 @@ This project is structured as a full-stack application with:
 
 ## Getting Started
 
+### Local Quick Start
+
+Run backend on port 8081 (dev profile) and frontend on port 3002 pointing to the backend:
+
+Backend (use system Maven):
+- Linux/macOS: `mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dserver.port=8081`
+- Windows (PowerShell): `mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dserver.port=8081`
+
+Windows fallback (if `mvn` is not recognized):
+- From repository root (PowerShell):
+  ```powershell
+  cd .\invoicing-api
+  & .\apache-maven-3.9.4\bin\mvn.cmd spring-boot:run -Dspring-boot.run.profiles=dev -Dserver.port=8081
+  ```
+  Or, stay at repo root and point to the backend `pom.xml`:
+  ```powershell
+  & .\invoicing-api\apache-maven-3.9.4\bin\mvn.cmd -f .\invoicing-api\pom.xml spring-boot:run -Dspring-boot.run.profiles=dev -Dserver.port=8081
+  ```
+  Note: Ensure JDK 17 is installed and `JAVA_HOME` is set.
+
+PowerShell-safe options (fixes "Unknown lifecycle phase" from argument parsing):
+- Move `-D` properties before the goal:
+  ```powershell
+  & .\invoicing-api\apache-maven-3.9.4\bin\mvn.cmd -f .\invoicing-api\pom.xml -Dspring-boot.run.profiles=dev -Dserver.port=8081 spring-boot:run
+  ```
+- Quote the `-D` properties so PowerShell treats them as literals:
+  ```powershell
+  & .\invoicing-api\apache-maven-3.9.4\bin\mvn.cmd -f .\invoicing-api\pom.xml spring-boot:run "-Dspring-boot.run.profiles=dev" "-Dserver.port=8081"
+  ```
+- Alternative: package then run the jar (avoids Maven argument parsing):
+  ```powershell
+  & .\invoicing-api\apache-maven-3.9.4\bin\mvn.cmd -f .\invoicing-api\pom.xml clean package
+  java -jar .\invoicing-api\target\invoicing-api-0.0.1-SNAPSHOT.jar --spring.profiles.active=dev --server.port=8081
+  ```
+
+Absolute-path invocation (if relative path fails):
+```powershell
+& 'C:\Users\tanne\Gauntlet\Invoice\invoicing-api\apache-maven-3.9.4\bin\mvn.cmd' -f 'C:\Users\tanne\Gauntlet\Invoice\invoicing-api\pom.xml' -Dspring-boot.run.profiles=dev -Dserver.port=8081 spring-boot:run
+```
+
+Temporary PATH add (then use `mvn` normally):
+```powershell
+$env:PATH = "$PWD\invoicing-api\apache-maven-3.9.4\bin;$env:PATH"
+mvn -v
+mvn -f .\invoicing-api\pom.xml -Dspring-boot.run.profiles=dev -Dserver.port=8081 spring-boot:run
+```
+
+Frontend (PowerShell):
+```
+$env:NEXT_PUBLIC_API_BASE_URL='http://localhost:8081/api'; npm run dev -- -p 3002
+```
+Frontend (bash):
+```
+NEXT_PUBLIC_API_BASE_URL='http://localhost:8081/api' npm run dev -- -p 3002
+```
+
 ### Backend Setup
 
 1. Navigate to the backend project directory:
@@ -115,16 +177,31 @@ This project is structured as a full-stack application with:
    ```
 
 2. Build the project with Maven:
-   ```bash
-   ./mvnw clean install
-   ```
+   - Linux/macOS:
+     ```bash
+     mvn clean install
+     ```
+   - Windows:
+     ```powershell
+     mvn clean install
+     ```
 
 3. Run the Spring Boot application:
-   ```bash
-   ./mvnw spring-boot:run
-   ```
+   - Default (port 8080):
+     ```bash
+     mvn spring-boot:run
+     ```
+   - Dev profile on port 8081:
+     - Linux/macOS:
+       ```bash
+       mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dserver.port=8081
+       ```
+     - Windows (PowerShell):
+       ```powershell
+       mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dserver.port=8081
+       ```
 
-The API will be available at `http://localhost:8080/api`.
+The API will be available at `http://localhost:8080/api` (default) or `http://localhost:8081/api` (dev profile).
 
 ### Frontend Setup
 
@@ -135,13 +212,18 @@ The API will be available at `http://localhost:8080/api`.
 
 2. Install dependencies:
    ```bash
-   bun install
+   npm install
    ```
 
-3. Start the development server:
-   ```bash
-   bun dev
-   ```
+3. Start the development server (point to your backend):
+   - PowerShell:
+     ```powershell
+     $env:NEXT_PUBLIC_API_BASE_URL='http://localhost:8081/api'; npm run dev -- -p 3002
+     ```
+   - bash:
+     ```bash
+     NEXT_PUBLIC_API_BASE_URL='http://localhost:8081/api' npm run dev -- -p 3002
+     ```
 
 The web application will be available at `http://localhost:3002`.
 

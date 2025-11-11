@@ -21,20 +21,26 @@ type AuthResponse = {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: 'ADMIN' | 'USER';
 };
 
 type RegisterResponse = {
   id: string;
   name: string;
   email: string;
-  role: string;
+  role: 'ADMIN' | 'USER';
 };
 
 type ApiError = {
   message: string;
   status?: number;
 };
+
+function isApiError(value: unknown): value is ApiError {
+  if (typeof value !== 'object' || value === null) return false;
+  const v = value as Record<string, unknown>;
+  return typeof v.message === 'string';
+}
 
 // Define DTO types to match the mock-data service
 export type InvoiceItemDto = {
@@ -177,9 +183,9 @@ async function fetchWithAuth<T = unknown>(url: string, options: RequestInit = {}
       // Try to parse error response JSON first; if it fails, fall back to text
       let message = `HTTP ${response.status}: ${response.statusText}`;
       try {
-        const errorData: ApiError = await response.json();
-        if (errorData && (errorData as any).message) {
-          message = (errorData as any).message as string;
+        const errorData: unknown = await response.json();
+        if (isApiError(errorData)) {
+          message = errorData.message;
         }
       } catch {
         // JSON parse failed (e.g., empty body or text/plain); attempt to read text
@@ -385,33 +391,19 @@ async function handleMockPaymentRequests(
 
   // GET /payments
   if (path === '/payments' && method === 'GET') {
-    // Return empty array for now - would need to implement in mock service
-    return [];
+    return mockApiService.payments.getAll();
   }
 
   // POST /payments (create)
   if (path === '/payments' && method === 'POST' && body) {
-    // Create mock payment
     const paymentData = body as CreatePaymentDto;
-    const mockPayment: Payment = {
-      id: `payment-${Date.now()}`,
-      invoiceId: paymentData.invoiceId,
-      amount: paymentData.amount,
-      method: paymentData.method,
-      status: PaymentStatus.PENDING,
-      receivedAt: paymentData.receivedAt || new Date().toISOString(),
-      reference: paymentData.reference,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    return mockPayment;
+    return mockApiService.payments.create(paymentData);
   }
 
   // Handle invoice-based queries like /payments/invoice/invoice-1
   if (path.startsWith('/payments/invoice/') && method === 'GET') {
     const invoiceId = path.split('/').pop() as string;
-    // Return empty array for now - would need to implement in mock service
-    return [];
+    return mockApiService.payments.getByInvoiceId(invoiceId);
   }
 
   // Handle ID-based operations if matches pattern /payments/{id}
@@ -420,48 +412,25 @@ async function handleMockPaymentRequests(
 
     // GET /payments/{id}
     if (method === 'GET') {
-      // Return mock payment for now
-      throw new Error(`Payment with id ${id} not found`);
+      return mockApiService.payments.getById(id);
     }
 
     // PUT /payments/{id}
     if (method === 'PUT' && body) {
-      // Update mock payment
       const paymentData = body as UpdatePaymentDto;
-      const mockPayment: Payment = {
-        id: id,
-        invoiceId: paymentData.invoiceId || 'invoice-1',
-        amount: paymentData.amount || 0,
-        method: paymentData.method || PaymentMethod.CASH,
-        status: PaymentStatus.PENDING,
-        receivedAt: paymentData.receivedAt || new Date().toISOString(),
-        reference: paymentData.reference,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      return mockPayment;
+      return mockApiService.payments.update(id, paymentData);
     }
 
     // DELETE /payments/{id}
     if (method === 'DELETE') {
+      await mockApiService.payments.delete(id);
       return null;
     }
 
     // PATCH /payments/{id}/status
     if (matches[2] === 'status' && method === 'PATCH' && body) {
       const { status } = body as { status: PaymentStatus };
-      // Return mock payment with updated status
-      const mockPayment: Payment = {
-        id: id,
-        invoiceId: 'invoice-1',
-        amount: 100,
-        method: PaymentMethod.CASH,
-        status: status,
-        receivedAt: new Date().toISOString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      return mockPayment;
+      return mockApiService.payments.updateStatus(id, status);
     }
   }
 

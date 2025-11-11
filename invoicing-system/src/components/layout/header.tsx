@@ -16,13 +16,13 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { NavItems } from "@/components/layout/nav-items";
-import { logout, getUserData } from "@/lib/auth";
+import { logout, getUserData, type UserData } from "@/lib/auth";
 import { useState, useEffect } from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export function Header() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserData | null>(null);
 
   useEffect(() => {
     // Get user data from local storage
@@ -63,7 +63,7 @@ export function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/dashboard" className="flex items-center gap-2">
-            <span className="text-xl font-bold">ERP Invoicing</span>
+            <span className="text-xl font-bold">InvoiceMe</span>
           </Link>
           <nav className="hidden md:flex md:gap-6">
             <NavItems />

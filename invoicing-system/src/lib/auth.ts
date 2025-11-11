@@ -1,5 +1,14 @@
 // Authentication utilities
 
+export type UserRole = 'ADMIN' | 'USER';
+
+export interface UserData {
+  id?: string;
+  name?: string;
+  email?: string;
+  role?: UserRole;
+}
+
 // Token storage key
 const TOKEN_KEY = 'invoicing_auth_token';
 const USER_DATA_KEY = 'invoicing_user_data';
@@ -23,13 +32,13 @@ export const removeToken = (): void => {
 };
 
 // Get user data from local storage
-export const getUserData = (): any | null => {
+export const getUserData = (): UserData | null => {
   if (typeof window === 'undefined') return null;
 
   const userData = localStorage.getItem(USER_DATA_KEY);
   if (userData) {
     try {
-      return JSON.parse(userData);
+      return JSON.parse(userData) as UserData;
     } catch (error) {
       console.error('Error parsing user data from localStorage:', error);
       return null;
@@ -39,7 +48,7 @@ export const getUserData = (): any | null => {
 };
 
 // Set user data in local storage
-export const setUserData = (userData: any): void => {
+export const setUserData = (userData: UserData): void => {
   if (typeof window === 'undefined') return;
   localStorage.setItem(USER_DATA_KEY, JSON.stringify(userData));
 };
